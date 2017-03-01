@@ -4,7 +4,8 @@
 目前，本项目的主要适配目标为在Windows平台上的各类模拟器内运行的文字游戏。
 
 # 适配游戏列表
-**psp.lxzs1** 流行之神1
+**PSP** （目前支持PPSSPP 1.3版本，不支持其它的版本及64位的PPSSPP）
+psp.lxzs1 流行之神1 （备注：在启动server.py后如果无法抓取到文本，请在PPSSPP中存储一次即时存档再加载，或加载以前成功激活文本抓取后保存的即时存档）。
 
 # 使用方式
 1、安装Python 2.7（不支持Python3）： https://www.python.org/ftp/python/2.7.13/python-2.7.13.msi 。
