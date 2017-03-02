@@ -8,10 +8,9 @@ import importlib
 
 PORT = 8052
 
-lastSuccessReadForHttpApi = {}
 class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def handleGameStringApi(self):
-        global lastSuccessReadForHttpApi, backend
+        global backend
 
         self.send_response(200)
         self.send_header('Content-type','text/html')
@@ -19,8 +18,7 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.end_headers()
         ret = backend.readGameStringForHttpApi()
         if (ret is None):
-            ret = lastSuccessReadForHttpApi
-            ret['status'] = 'failed'
+            ret = {'status': 'failed'}
         else:
             lastSuccessReadForHttpApi = ret
         self.wfile.write(json.dumps(ret))
