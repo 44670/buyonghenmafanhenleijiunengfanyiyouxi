@@ -1,5 +1,4 @@
 from struct import pack, unpack
-import requests
 import SimpleHTTPServer
 import SocketServer
 import sys
