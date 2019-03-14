@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title class="notranslate">不用很麻烦很累就能翻译游戏</title>
+  </head>
+  <body>
+      
+    <div class="container">
+        <div class="row">
+            <label class="notranslate">原文</label>
+            <textarea id="text-str" class="form-control" style="height:200px"></textarea>
+        </div>
+        <div class="row">
+            <label class="notranslate">机器翻译</label>
+            <div class="well">
+                <div id="div-str" style="min-height: 200px; white-space: pre-line"></div>
+            </div>
+            <div class="notranslate">请安装谷歌Chrome浏览器，打开此网页后在右键菜单点击翻译，即可获取机器翻译后的文本（通常翻译到英语的效果比较好）。<br/>
+                下载地址：<a href="https://www.google.com/chrome">https://www.google.com/chrome</a><br/>
+                
+                或者：<a href="http://down.tech.sina.com.cn/page/40975.html">http://down.tech.sina.com.cn/page/40975.html</a>
+            </div>
+        </div>
+
+    </div>
+    <script>
+var lastGameText = '';
+var textBeforeTranslate = '';
+var lastSentStrToFrontend = '';
+function formatText(ret) {
+    var text = '';
+    for (var i = 0; i < ret.r.length; i++) {
+        if (ret.c[i] > 30) {
+            if (text.length > 0) {
+                text += '\n';
+            }
+        }
+        text += ret.v[i];
+    }
+    return text.replace(/・/g, '.');
+}
+function formatTextForSubtitle(text){
+    var ret='';
+    var currentWidth = 0;
+    var lineWidth = 60;
+    for (var i = 0; i < text.length; i++) {
+        var code = text.charCodeAt(i);
+        var ch = text[i];
+        var checkNewLine = false;
+        if (code == 0x0A) {
+            ret += '\n';
+            currentWidth = 0;
+            continue;
+        }
+        if (code > 0x7F) {
+            currentWidth += 2;
+            checkNewLine = true;
+        } else {
+            currentWidth += 1;
+            if (ch == ' ') {
+                checkNewLine = true;
+            }
+        }
+        if (checkNewLine) {
+            if (currentWidth > lineWidth){
+                ret += '\n';
+                currentWidth = 0;
+            }
+        }
+        if ((ch == ' ') && (currentWidth == 0)) {
+            continue;
+        }
+        ret += ch;
+    }
+    return ret;
+}
+function pollStringFromLocalService() {
+    $.ajax({
+        url: 'http://127.0.0.1:8052/str',
+        success: function(data) {
+            var ret = JSON.parse(data);
+            if (ret.status != 'ok') {
+                return;
+            }
+            text = formatText(ret);
+            if (text == lastGameText) {
+                return;
+            }
+            lastGameText = text;
+            $('#div-str').text(text);
+            $('#text-str').text(text);
+            textBeforeTranslate = $('#div-str').text();
+        },
+        error: function() {
+        }
+    });
+    var divText = $('#div-str').text();
+    if (textBeforeTranslate != divText) {
+        if (lastSentStrToFrontend != divText) {
+            lastSentStrToFrontend = divText;
+            $.get('http://127.0.0.1:8053/update', {'str': formatTextForSubtitle(divText), 'r': Math.random()});
+        }
+    }
+}
+$(function() {
+    window.setInterval(pollStringFromLocalService, 1000);
+});
+    </script>
+  </body>
+</html>
