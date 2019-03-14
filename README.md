@@ -21,7 +21,7 @@ psp.lxzs2 |  ULJS-00149 | 流行之神2 |
 
 3、**启动游戏之后**，在命令提示符中输入：server.py 游戏列表中的游戏代码（例如：server.py psp.lxzs1），开启用于抓取文本的服务。
 
-4、在浏览器中打开 http://44670.org/fanyi ，即可在网页中查看抓取到的文本并进行翻译。
+4、在 Chrome 浏览器中打开 https://44670.github.io/buyonghenmafanhenleijiunengfanyiyouxi/fanyi.html ，即可在网页中查看抓取到的文本并进行翻译。
 
 5、如果需要将结果以字幕的形式叠加显示到屏幕上，启动frontends_bin\frontend_overlay.exe（需要.NET Framework 4）。
 
